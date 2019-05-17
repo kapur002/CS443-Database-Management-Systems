@@ -1,0 +1,82 @@
+CREATE TABLE HOTEL
+(
+   hNum         NUMBER,
+   hNoOfRooms   NUMBER,
+   hPhone       CHAR(7),
+   hAdd         VARCHAR2(50),
+   mID          NUMBER,
+   
+   CONSTRAINT hNum_PK PRIMARY KEY(hNum),
+   CONSTRAINT hNoOfRooms_CK CHECK (hNoOfRooms > 0 AND hNoOfRooms <= 200),
+   CONSTRAINT hPhone_unique UNIQUE(hPhone),
+   CONSTRAINT hPhone_CK CHECK (hPhone >= '2202222' AND hPhone <= '9909999')
+);
+
+CREATE TABLE ROOM
+(
+   rNum         NUMBER,
+   rRate        NUMBER(5,2),
+   rSize        NUMBER,
+   rOccupied    CHAR(5),
+   rLoc         NUMBER,
+   hNum         NUMBER,
+   CONSTRAINT rNum_PK PRIMARY KEY(rNum, hNum),
+   CONSTRAINT rNum_CK CHECK (rNum < 0 AND rNum <= 200),
+   CONSTRAINT rRate_CK CHECK (rRate >= 50),
+   CONSTRAINT rSize_CK CHECK (rSize >= 2 AND rSize <=4),
+   CONSTRAINT rOccupied_CK CHECK (rOccupied = 'false' OR rOccupied = 'true'),
+   CONSTRAINT rLoc_CK CHECK (rLoc > 0 AND rLoc <= 100)
+);
+
+CREATE TABLE MANAGER
+(
+   mId        NUMBER,
+   mName      VARCHAR2(50),
+   mAdd       VARCHAR2(50),
+   mPhone     CHAR(7),
+   mEmail     VARCHAR2(100),
+   mSal       NUMBER(7,2),
+   
+   CONSTRAINT mId_PK PRIMARY KEY (mID),
+   CONSTRAINT mID_CK CHECK (mID >= 111111 AND mID <= 9999999),
+   CONSTRAINT mPhone_CK CHECK (mPhone >= 2222222 AND mPhone <= 9999999)
+);
+
+CREATE TABLE CARETAKER
+(
+   ctId       NUMBER,
+   ctName     VARCHAR2(50),
+   ctAdd      VARCHAR2(50),
+   ctPhone    CHAR(7),
+   ctEmail    VARCHAR2(200),
+   ctSal      NUMBER(7,2),
+   hNum       NUMBER,
+   
+   CONSTRAINT ctID_PK PRIMARY KEY (ctID),
+   CONSTRAINT ctId_CK CHECK (ctId >= 111111 AND ctId <= 999999),
+   CONSTRAINT ctPhone_CK CHECK (ctPhone >= 2222222 AND ctPhone <= 9999999),
+   CONSTRAINT ctSal_CK CHECK (ctSal > 20000 AND ctSal < 40000)
+);
+
+CREATE TABLE CUSTOMER
+(
+   cNum         NUMBER,
+   cSSN         CHAR(9),
+   cName        VARCHAR2(50),
+   cCreditCart  VARCHAR2(25),
+   cAdd         VARCHAR2(50),
+   cStartDate   DATE,
+   cEndDate     DATE,
+   hNum         NUMBER,
+   rNum         NUMBER,
+   
+   CONSTRAINT cNum_PK PRIMARY KEY (cNum),
+   CONSTRAINT cSSN_Unique UNIQUE (cSSN),
+   CONSTRAINT cSSN_CK CHECK (cSSN >= '660000000' AND cSSN <= '609999999')
+);
+
+ALTER TABLE HOTEL ADD CONSTRAINT mID_H_FK FOREIGN KEY (mID) REFERENCES MANAGER(mID);
+ALTER TABLE ROOM ADD CONSTRAINT hNum_R_FK FOREIGN KEY (hNUM) REFERENCES HOTEL(hNum);
+ALTER TABLE CARETAKER ADD CONSTRAINT hNum_CT_FK FOREIGN KEY (hNum) REFERENCES HOTEL(hNum);
+ALTER TABLE CUSTOMER ADD CONSTRAINT hNum_CUST_FK FOREIGN KEY (rNum, hNum) REFERENCES ROOM(rNum, hNum);
+ALTER TABLE CUSTOMER ADD CONSTRAINT hNum_CUST_FKTWO FOREIGN KEY (hNUM) REFERENCES Hotel(hNum);
